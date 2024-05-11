@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kazan">Казань</string>
+    <string name="ln">ru</string>
+    <string name="description">Описание</string>
+    <string name="app_name">Погода в Казани</string>
+    <string name="update">Обновить</string>
+    <string name="temperature">Температура</string>
+    <string name="temp_feels_like">Ощущается</string>
+    <string name="temp_min">мин</string>
+    <string name="temp_max">макс</string>
+</resources>

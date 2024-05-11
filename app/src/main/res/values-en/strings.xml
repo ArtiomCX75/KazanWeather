@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="kazan">Kazan</string>
     <string name="ln">en</string>
     <string name="description">Description</string>
-    <string name="app_name">Kazan Weather</string>
+    <string name="app_name">KazanWeather</string>
     <string name="update">Update</string>
     <string name="temperature">Temperature</string>
     <string name="temp_feels_like">Feels like</string>
