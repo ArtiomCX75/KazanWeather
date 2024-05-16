@@ -8,4 +8,8 @@
     <string name="temp_feels_like">Feels like</string>
     <string name="temp_min">min</string>
     <string name="temp_max">max</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
 </resources>

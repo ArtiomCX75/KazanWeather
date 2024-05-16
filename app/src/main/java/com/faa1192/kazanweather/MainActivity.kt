@@ -25,6 +25,11 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +67,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             val jsonObject = JSONObject(response.component1())
             val main = jsonObject.getJSONObject("main")
             val wind = jsonObject.getJSONObject("wind")
+            val sys = jsonObject.getJSONObject("sys")
             val weather = jsonObject.getJSONArray("weather").getJSONObject(0)
             val description = weather["description"]
             val temp = main["temp"]
@@ -69,7 +75,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             val tempMin = main["temp_min"]
             val tempMax = main["temp_max"]
             val windSpeed = wind["speed"]
-            val windDeg = when (wind["deg"].toString().toInt()) {
+            val windDeg = when ((wind["deg"].toString().toInt() + 360 + 180) % 360) {
                 in 0..22 -> "С"
                 in 23..67 -> "СВ"
                 in 68..112 -> "В"
@@ -82,7 +88,20 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 else -> ""
             }
             val windGust = wind["gust"]
+            val sunrise = sys["sunrise"].toString().toLong() * 1000
+            val sunset = sys["sunset"].toString().toLong() * 1000
 
+            val sunriseDateTime: LocalDateTime =
+                Instant.ofEpochMilli(sunrise).atZone(ZoneId.systemDefault()).toLocalDateTime()
+            val sunsetDateTime: LocalDateTime =
+                Instant.ofEpochMilli(sunset).atZone(ZoneId.systemDefault()).toLocalDateTime()
+
+            val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            val sunriseText: String = sunriseDateTime.format(formatter)
+            val sunsetText: String = sunsetDateTime.format(formatter)
+
+            val pressure = (main["pressure"].toString().toLong() / 1.3333).roundToInt().toString()
+            val humidity = main["humidity"]
 
             Text("${stringResource(R.string.description)}: $description")
             Text("${stringResource(R.string.temperature)}: $temp С, ${stringResource(R.string.temp_feels_like)} $tempFeel C")
@@ -90,6 +109,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             Text("")
             Text("Ветер: $windSpeed м/с; $windDeg; порывы: $windGust м/с")
             Text("")
+            Text("${stringResource(R.string.pressure)}: $pressure")
+            Text("${stringResource(R.string.humidity)}: $humidity%")
+            Text("")
+            Text("${stringResource(R.string.sunrise)}: $sunriseText")
+            Text("${stringResource(R.string.sunset)}: $sunsetText")
+
 
         }
         Button(onClick = { updateData(response, ln, lastUpdate) }) {

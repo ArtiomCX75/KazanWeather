@@ -9,4 +9,8 @@
     <string name="temp_feels_like">Ощущается</string>
     <string name="temp_min">мин</string>
     <string name="temp_max">макс</string>
+    <string name="sunrise">Восход</string>
+    <string name="sunset">Закат</string>
+    <string name="pressure">Давление</string>
+    <string name="humidity">Влажность</string>
 </resources>
