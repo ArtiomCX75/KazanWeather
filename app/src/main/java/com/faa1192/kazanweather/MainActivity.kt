@@ -256,16 +256,16 @@ fun Forecast(response: MutableState<String>, ln: String, lastUpdate: MutableStat
         val arr: JSONArray = jsonObject.getJSONArray("list")
 
         var counter = 0;
-        while (counter < arr.length() && counter < 10) {
+        while (counter < arr.length() && counter < 9) {
             val element = arr.getJSONObject(counter)
             val main = element.getJSONObject("main")
-            val weather = element.getJSONObject("weather")
+            val weather = element.getJSONArray("weather").getJSONObject(0)
 
             val temp = main["temp"]
             val dt = element["dt_txt"]
             val description = weather["description"]
 
-            Text(text = "$dt  $temp  $description")
+            Text(text = "$dt\n$temp C  $description\n")
 
             counter++
 
