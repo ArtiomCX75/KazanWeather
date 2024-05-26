@@ -5,11 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -18,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import com.faa1192.kazanweather.ui.theme.KazanWeatherTheme
 import kotlinx.coroutines.CoroutineScope
@@ -75,29 +81,53 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
     }
 
-
     val ln = stringResource(R.string.ln)
 
-    Column {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+    ) {
         currentWeather(currentWeatherResponse, stringResource(R.string.ln), lastUpdateCurrent)
         forecastWeather(forecastWeatherResponse, stringResource(R.string.ln), lastUpdateForecast)
-        Text(
-            text = stringResource(R.string.kazan),
-            modifier = modifier
-        )
-        when (state.value) {
-            State.CURRENT -> Current(currentWeatherResponse, ln, lastUpdateCurrent)
-            State.FORECAST_5_DAYS -> Forecast(forecastWeatherResponse, ln, lastUpdateForecast)
-            else -> println("")
-        }
-        Row {
-            Button(onClick = { state.value = State.CURRENT }) {
-                Text(text = "Current tab")
+        /*   Text(
+               text = stringResource(R.string.kazan),
+               modifier = modifier
+           )*/
+        Text(text = "")
+        Text(text = "")
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            TabRow(selectedTabIndex = state.value.ordinal) {
+                State.entries.forEachIndexed { index, value ->
+                    Tab(text = {
+                        Text(
+                            value.name.replace("_", " ").lowercase().capitalize(Locale.current)
+                        )
+                    },
+                        selected = state.value.ordinal == index,
+                        onClick = { state.component2().invoke(State.entries[index]) }
+                    )
+                }
             }
-            Button(onClick = { state.value = State.FORECAST_5_DAYS }) {
-                Text(text = "Forecast tab")
+            when (state.value) {
+                State.CURRENT -> Current(currentWeatherResponse, ln, lastUpdateCurrent)
+                State.FORECAST_5_DAYS -> Forecast(forecastWeatherResponse, ln, lastUpdateForecast)
+                else -> println("")
             }
         }
+
+
+        /*    Row {
+                Button(onClick = { state.value = State.CURRENT }) {
+                    Text(text = "Current tab")
+                }
+                Button(onClick = { state.value = State.FORECAST_5_DAYS }) {
+                    Text(text = "Forecast tab")
+                }
+            }*/
+        Text(text = "")
+        Text(text = "")
+        Text(text = "")
 
     }
 }
@@ -115,7 +145,7 @@ fun currentWeather(response: MutableState<String>, ln: String, lastUpdate: Mutab
     val last = lastUpdate.component1()
     val current = System.currentTimeMillis()
     val diff = (current - last)
-    if (diff < 60 * 1000) {
+    if (diff < 60 * 1000 * 10) { // 10 min
         return
     } else {
         lastUpdate.component2().invoke(current)
@@ -152,7 +182,7 @@ fun forecastWeather(response: MutableState<String>, ln: String, lastUpdate: Muta
     val last = lastUpdate.component1()
     val current = System.currentTimeMillis()
     val diff = (current - last)
-    if (diff < 60 * 1000) {
+    if (diff < 60 * 1000 * 60 * 3) { // 3 hours
         return
     } else {
         lastUpdate.component2().invoke(current)
@@ -241,9 +271,12 @@ fun Current(response: MutableState<String>, ln: String, lastUpdate: MutableState
 
 
     }
-    Button(onClick = { currentWeather(response, ln, lastUpdate) }) {
+    Button(
+        onClick = { currentWeather(response, ln, lastUpdate) },
+        modifier = Modifier.fillMaxWidth(1f)
+    ) {
 //        Text(text = stringResource(R.string.update))
-        Text(text = "update current")
+        Text(text = "update")
 
     }
 
@@ -255,25 +288,28 @@ fun Forecast(response: MutableState<String>, ln: String, lastUpdate: MutableStat
         val jsonObject = JSONObject(response.component1())
         val arr: JSONArray = jsonObject.getJSONArray("list")
 
-        var counter = 0;
-        while (counter < arr.length() && counter < 9) {
-            val element = arr.getJSONObject(counter)
-            val main = element.getJSONObject("main")
-            val weather = element.getJSONArray("weather").getJSONObject(0)
+        var counter = 0
+        Column {
+            while (counter < arr.length()) {
+                val element = arr.getJSONObject(counter)
+                val main = element.getJSONObject("main")
+                val weather = element.getJSONArray("weather").getJSONObject(0)
 
-            val temp = main["temp"]
-            val dt = element["dt_txt"]
-            val description = weather["description"]
+                val temp = main["temp"]
+                val dt = element["dt_txt"]
+                val description = weather["description"]
 
-            Text(text = "$dt\n$temp C  $description\n")
+                Text(text = "$dt\n$temp C  $description\n")
 
-            counter++
-
-
+                counter++
+            }
         }
     }
-    Button(onClick = { forecastWeather(response, ln, lastUpdate) }) {
-        Text(text = "update forecast")
+    Button(
+        onClick = { forecastWeather(response, ln, lastUpdate) },
+        modifier = Modifier.fillMaxWidth(1f)
+    ) {
+        Text(text = "update")
     }
 
 }
