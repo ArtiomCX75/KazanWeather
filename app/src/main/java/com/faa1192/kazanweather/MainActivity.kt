@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
@@ -38,6 +39,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -217,6 +219,7 @@ fun forecastWeather(response: MutableState<String>, ln: String, lastUpdate: Muta
 
 @Composable
 fun Current(response: MutableState<String>, ln: String, lastUpdate: MutableState<Long>) {
+    val uriHandler = LocalUriHandler.current
     if (response.component1().isNotBlank()) {
         val jsonObject = JSONObject(response.component1())
         val main = jsonObject.getJSONObject("main")
@@ -279,6 +282,17 @@ fun Current(response: MutableState<String>, ln: String, lastUpdate: MutableState
         Text(text = "update")
 
     }
+
+    Button(
+        onClick = {
+            uriHandler.openUri("https://github.com/ArtiomCX75/KazanWeather/blob/master/TermsConditions.md")
+        },
+        modifier = Modifier.fillMaxWidth(1f)
+    ) {
+        Text(text = stringResource(R.string.policy))
+
+    }
+
 
 }
 

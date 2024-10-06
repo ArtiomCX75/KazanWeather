@@ -13,4 +13,5 @@
     <string name="sunset">Sunset</string>
     <string name="pressure">Pressure</string>
     <string name="humidity">Humidity</string>
+    <string name="policy">Privacy policy</string>
 </resources>
