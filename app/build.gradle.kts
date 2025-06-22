@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.faa1192.kazanweather"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.faa1192.kazanweather"
