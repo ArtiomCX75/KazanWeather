@@ -114,7 +114,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             when (state.value) {
                 State.CURRENT -> Current(currentWeatherResponse, ln, lastUpdateCurrent)
                 State.FORECAST_5_DAYS -> Forecast(forecastWeatherResponse, ln, lastUpdateForecast)
-                else -> println("")
             }
         }
 
@@ -279,7 +278,7 @@ fun Current(response: MutableState<String>, ln: String, lastUpdate: MutableState
         modifier = Modifier.fillMaxWidth(1f)
     ) {
 //        Text(text = stringResource(R.string.update))
-        Text(text = "update")
+        Text(text = "Update")
 
     }
 
